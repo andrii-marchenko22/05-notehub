@@ -17,10 +17,10 @@ function App() {
 
   const perPage = 10;
 
-  const { data } = useQuery({
+  const { data, isSuccess } = useQuery({
     queryKey: ["notes", searchQuery, currentPage, perPage],
     queryFn: () => fetchNotes(searchQuery, currentPage, perPage),
-    // enabled: searchQuery !== "",
+    enabled: searchQuery !== "",
     placeholderData: keepPreviousData,
   });
 
@@ -37,7 +37,7 @@ function App() {
       <div className={css.app}>
         <header className={css.toolbar}>
           <SearchBox onSubmit={handleSearch} />
-          {totalPages > 1 && (
+          {isSuccess && totalPages > 1 && (
             <Pagination
               totalPages={totalPages}
               currentPage={currentPage}

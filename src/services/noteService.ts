@@ -18,7 +18,7 @@ export const fetchNotes = async (
 ): Promise<notesRes> => {
   const response = await axios.get<notesRes>(BASE_URL, {
     params: {
-      ...(searchText !== "" && { q: searchText }),
+      ...(searchText !== "" && { search: searchText }),
       page,
       perPage,
     },

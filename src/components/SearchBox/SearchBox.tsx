@@ -1,11 +1,11 @@
 import css from "./SearchBox.module.css";
 
-interface NoteFormProps {
+interface SearchBoxProps {
   value: string;
   onSearch: (searchText: string) => void;
 }
 
-export const SearchBox = ({ value, onSearch }: NoteFormProps) => {
+export const SearchBox = ({ value, onSearch }: SearchBoxProps) => {
   return (
     <input
       className={css.input}

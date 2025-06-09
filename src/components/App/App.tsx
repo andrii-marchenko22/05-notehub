@@ -7,6 +7,9 @@ import { useState } from "react";
 import { SearchBox } from "../SearchBox/SearchBox";
 import { NoteModal } from "../NoteModal/NoteModal";
 import { useDebounce } from "use-debounce";
+import { Loader } from "../Loader/Loader";
+import { Toaster } from "react-hot-toast";
+import { ErrorMessage } from "../ErrorMesage/ErrorMesage";
 
 function App() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +20,7 @@ function App() {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const { data } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["notes", debouncedSearchQuery, currentPage],
     queryFn: () => fetchNotes(debouncedSearchQuery, currentPage),
     placeholderData: keepPreviousData,
@@ -33,6 +36,7 @@ function App() {
 
   return (
     <>
+      <Toaster position="top-center" reverseOrder={false} />
       <div className={css.app}>
         <header className={css.toolbar}>
           <SearchBox value={searchQuery} onSearch={handleSearchQuery} />
@@ -47,9 +51,15 @@ function App() {
             Create note +
           </button>
         </header>
-
         {isModalOpen && <NoteModal onClose={closeModal} />}
-        {notes.length > 0 && <NoteList notes={notes} />}
+        {error && (
+          <ErrorMessage message="Error loading notes. Please try again." />
+        )}
+        {isLoading && <Loader />}
+        {!isLoading && !error && notes.length > 0 && <NoteList notes={notes} />}
+        {!isLoading && !error && notes.length === 0 && (
+          <p>No notes found for your search.</p>
+        )}
       </div>
     </>
   );

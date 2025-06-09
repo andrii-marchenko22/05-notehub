@@ -3,17 +3,17 @@ import { deleteNote } from "../../services/noteService";
 import css from "./NoteList.module.css";
 import type { Note } from "../../types/note";
 
-interface noteListsProps {
+interface noteListProps {
   notes: Note[];
 }
 
-export const NoteList = ({ notes }: noteListsProps) => {
-  const QueryClient = useQueryClient();
+export const NoteList = ({ notes }: noteListProps) => {
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: deleteNote,
     onSuccess: () => {
-      QueryClient.invalidateQueries({ queryKey: ["notes"] });
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
     },
   });
 

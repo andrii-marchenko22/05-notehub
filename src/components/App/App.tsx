@@ -15,7 +15,7 @@ import { useDebounce } from "use-debounce";
 import type { NewPostCreate } from "../../types/note";
 
 function App() {
-  const QueryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,7 +41,7 @@ function App() {
 
   const mutation = useMutation({
     mutationFn: createNote,
-    onSuccess: () => QueryClient.invalidateQueries({ queryKey: ["notes"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["notes"] }),
   });
 
   const handleCreateNote = (noteData: NewPostCreate) => {

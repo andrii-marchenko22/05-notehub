@@ -27,7 +27,7 @@ const initialValues: SearchFormValues = {
   tag: "Todo",
 };
 
-export default function NoteForm() {
+export const NoteForm = () => {
   const fieldId = useId();
 
   const handleSubmit = (
@@ -96,4 +96,4 @@ export default function NoteForm() {
       </Form>
     </Formik>
   );
-}
+};

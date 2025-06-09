@@ -6,38 +6,37 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { SearchBox } from "../SearchBox/SearchBox";
 import { NoteModal } from "../NoteModal/NoteModal";
+import { useDebounce } from "use-debounce";
 
 function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const perPage = 10;
-
-  const { data, isSuccess } = useQuery({
-    queryKey: ["notes", searchQuery, currentPage, perPage],
-    queryFn: () => fetchNotes(searchQuery, currentPage, perPage),
-    enabled: searchQuery !== "",
+  const { data } = useQuery({
+    queryKey: ["notes", debouncedSearchQuery, currentPage],
+    queryFn: () => fetchNotes(debouncedSearchQuery, currentPage),
     placeholderData: keepPreviousData,
   });
 
-  const handleSearch = (newQuery: string) => {
+  const handleSearchQuery = (newQuery: string) => {
     setSearchQuery(newQuery);
     setCurrentPage(1);
   };
 
-  const totalPages = Math.ceil((data?.totalCount ?? 0) / perPage);
+  const totalPages = data?.totalCount ? Math.ceil(data.totalCount / 10) : 0;
   const notes = data?.notes ?? [];
 
   return (
     <>
       <div className={css.app}>
         <header className={css.toolbar}>
-          <SearchBox onSubmit={handleSearch} />
-          {isSuccess && totalPages > 1 && (
+          <SearchBox value={searchQuery} onSearch={handleSearchQuery} />
+          {totalPages > 1 && (
             <Pagination
               totalPages={totalPages}
               currentPage={currentPage}
@@ -48,8 +47,9 @@ function App() {
             Create note +
           </button>
         </header>
-        <NoteList notes={notes} />
+
         {isModalOpen && <NoteModal onClose={closeModal} />}
+        {notes.length > 0 && <NoteList notes={notes} />}
       </div>
     </>
   );

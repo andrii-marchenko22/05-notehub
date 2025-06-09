@@ -4,10 +4,10 @@ import type { Note, NewPostCreate } from "../types/note";
 const token = import.meta.env.VITE_NOTEHUB_TOKEN;
 const BASE_URL = "https://notehub-public.goit.study/api/notes";
 
-interface notesRes {
+interface notesResponse {
   notes: Note[];
   page: number;
-  totalPage: number;
+  totalPages: number;
   totalCount: number;
 }
 
@@ -15,8 +15,8 @@ export const fetchNotes = async (
   searchText: string,
   page = 1,
   perPage = 12
-): Promise<notesRes> => {
-  const response = await axios.get<notesRes>(BASE_URL, {
+): Promise<notesResponse> => {
+  const response = await axios.get<notesResponse>(BASE_URL, {
     params: {
       ...(searchText !== "" && { search: searchText }),
       page,
@@ -33,7 +33,7 @@ export const fetchNotes = async (
 };
 
 export const createNote = async (noteData: NewPostCreate) => {
-  const response = await axios.post(BASE_URL, noteData, {
+  const response = await axios.post<Note>(BASE_URL, noteData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -42,7 +42,7 @@ export const createNote = async (noteData: NewPostCreate) => {
 };
 
 export const deleteNote = async (notesId: number) => {
-  const response = await axios.delete(`${BASE_URL}/${notesId}`, {
+  const response = await axios.delete<Note>(`${BASE_URL}/${notesId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

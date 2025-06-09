@@ -36,7 +36,7 @@ function App() {
     setCurrentPage(1);
   };
 
-  const totalPages = data?.totalCount ? Math.ceil(data.totalCount / 12) : 0;
+  const totalPages = data?.totalPage ?? 0;
   const notes = data?.notes ?? [];
 
   const mutation = useMutation({

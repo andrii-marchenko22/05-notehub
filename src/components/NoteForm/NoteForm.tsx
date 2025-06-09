@@ -1,5 +1,6 @@
 import css from "./NoteForm.module.css";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import type { NewPostCreate } from "../../types/note";
 import type { FormikHelpers } from "formik";
 import { useId } from "react";
 import * as Yup from "yup";
@@ -15,6 +16,11 @@ const validationSchema = Yup.object().shape({
     .required("Tag is required"),
 });
 
+interface NoteFormProps {
+  onCreate: (newNote: NewPostCreate) => void;
+  onClose: () => void;
+}
+
 interface SearchFormValues {
   title: string;
   content: string;
@@ -22,20 +28,26 @@ interface SearchFormValues {
 }
 
 const initialValues: SearchFormValues = {
-  title: " ",
-  content: " ",
+  title: "",
+  content: "",
   tag: "Todo",
 };
 
-export const NoteForm = () => {
+export const NoteForm = ({ onCreate, onClose }: NoteFormProps) => {
   const fieldId = useId();
 
   const handleSubmit = (
     values: SearchFormValues,
     actions: FormikHelpers<SearchFormValues>
   ) => {
-    console.log(values);
+    const newNote: NewPostCreate = {
+      title: values.title,
+      content: values.content,
+      tag: values.tag,
+    };
+    onCreate(newNote);
     actions.resetForm();
+    onClose();
   };
 
   return (
@@ -86,7 +98,7 @@ export const NoteForm = () => {
         </div>
 
         <div className={css.actions}>
-          <button type="button" className={css.cancelButton}>
+          <button type="button" className={css.cancelButton} onClick={onClose}>
             Cancel
           </button>
           <button type="submit" className={css.submitButton} disabled={false}>

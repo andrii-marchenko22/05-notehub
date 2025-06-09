@@ -12,7 +12,7 @@ interface notesRes {
 }
 
 export const fetchNotes = async (
-  searchText?: string,
+  searchText: string,
   page = 1,
   perPage = 12
 ): Promise<notesRes> => {
@@ -33,11 +33,19 @@ export const fetchNotes = async (
 };
 
 export const createNote = async (noteData: NewPostCreate) => {
-  const responce = await axios.post(BASE_URL, noteData);
-  return responce.data;
+  const response = await axios.post(BASE_URL, noteData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
 };
 
-export const deleteNote = async (notesId: string) => {
-  const responce = await axios.delete(`${BASE_URL}/${notesId}`);
-  return responce.data;
+export const deleteNote = async (notesId: number) => {
+  const response = await axios.delete(`${BASE_URL}/${notesId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
 };

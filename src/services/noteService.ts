@@ -8,14 +8,15 @@ interface notesResponse {
   notes: Note[];
   page: number;
   totalPages: number;
-  totalCount: number;
 }
+
+type fetchNotesResponse = notesResponse & { totalCount: number };
 
 export const fetchNotes = async (
   searchText: string,
   page = 1,
   perPage = 12
-): Promise<notesResponse> => {
+): Promise<fetchNotesResponse> => {
   const response = await axios.get<notesResponse>(BASE_URL, {
     params: {
       ...(searchText !== "" && { search: searchText }),
